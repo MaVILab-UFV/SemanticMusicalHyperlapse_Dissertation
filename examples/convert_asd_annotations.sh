@@ -1,0 +1,11 @@
+python -m smh.utils.mat_to_npy examples/epic2016/Label_Data/Biking_0p_pedestrian_extracted.mat examples/epic2016/Source_Videos/Biking_0p.semantic.npy
+python -m smh.utils.mat_to_npy examples/epic2016/Label_Data/Biking_25p_pedestrian_extracted.mat examples/epic2016/Source_Videos/Biking_25p.semantic.npy
+python -m smh.utils.mat_to_npy examples/epic2016/Label_Data/Biking_50p_2_pedestrian_extracted.mat examples/epic2016/Source_Videos/Biking_50p_2.semantic.npy
+python -m smh.utils.mat_to_npy examples/epic2016/Label_Data/Biking_50p_pedestrian_extracted.mat examples/epic2016/Source_Videos/Biking_50p.semantic.npy
+python -m smh.utils.mat_to_npy examples/epic2016/Label_Data/Driving_0p_pedestrian_extracted.mat examples/epic2016/Source_Videos/Driving_0p.semantic.npy
+python -m smh.utils.mat_to_npy examples/epic2016/Label_Data/Driving_25p_pedestrian_extracted.mat examples/epic2016/Source_Videos/Driving_25p.semantic.npy
+python -m smh.utils.mat_to_npy examples/epic2016/Label_Data/Driving_50p_pedestrian_extracted.mat examples/epic2016/Source_Videos/Driving_50p.semantic.npy
+python -m smh.utils.mat_to_npy examples/epic2016/Label_Data/Walking_0p_face_extracted.mat examples/epic2016/Source_Videos/Walking_0p.semantic.npy
+python -m smh.utils.mat_to_npy examples/epic2016/Label_Data/Walking_25p_face_extracted.mat examples/epic2016/Source_Videos/Walking_25p.semantic.npy
+python -m smh.utils.mat_to_npy examples/epic2016/Label_Data/Walking_50p_face_extracted.mat examples/epic2016/Source_Videos/Walking_50p.semantic.npy
+python -m smh.utils.mat_to_npy examples/epic2016/Label_Data/Walking_75p_face_extracted.mat examples/epic2016/Source_Videos/Walking_75p.semantic.npy
