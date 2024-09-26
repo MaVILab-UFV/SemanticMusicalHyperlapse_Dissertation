@@ -1,6 +1,6 @@
 # A Multimodal Frame Sampling Algorithm for Semantic Hyperlapses with Musical Alignment
 
-| [Paper](http://urlib.net/ibi/8JMKD3MGPEW34M/4BU46CP) | [Project page](https://mavilab-ufv.github.io/projects) | [Video](https://youtube.com) |
+| [Paper](http://urlib.net/ibi/8JMKD3MGPEW34M/4BU46CP) | [Project page](https://mavilab-ufv.github.io/projects) | [Video](https://www.youtube.com/watch?v=-60zNZ1Yz70) |
 | ---------------------------------------------------- | ------------------------------------------------------ | ---------------------------- |
 
 Welcome to the repository for our paper “A Multimodal Frame Sampling Algorithm for
