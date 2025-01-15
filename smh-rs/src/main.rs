@@ -1,6 +1,6 @@
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
-#![expect(mixed_script_confusables, reason = "Mathematical notation.")]
+#![allow(mixed_script_confusables, reason = "Mathematical notation.")]
 
 mod accelerate;
 
@@ -13,7 +13,7 @@ use clap::Parser;
 use ndarray::prelude::*;
 use ndarray_npy::{NpzWriter, ReadNpyExt};
 
-use crate::accelerate::{backward, forward};
+use crate::accelerate::{backward, forward_parallel, forward_sequential};
 
 /// Runs the “Multimodal Frame Sampling Algorithm for Semantic Hyperlapses with Musical
 /// Alignment”.
@@ -32,6 +32,9 @@ pub struct Opts {
     /// Path to the `.json` file containing the weights of each optimization term.
     #[clap(long, default_value = "weights.json")]
     weights: PathBuf,
+    /// Whether to use the parallel implementation.
+    #[clap(long)]
+    parallel: bool,
     /// The maximum momentary playback speed.
     #[clap(long, default_value_t = 20)]
     maximum_speed: usize,
@@ -70,13 +73,29 @@ fn main() -> anyhow::Result<()> {
             .with_context(|| format!("Failed to read `{:?}`.", opts.matching))?
     };
 
-    let forward = forward(
-        semantic.view(),
-        matching.view(),
-        alignment.view(),
-        &weights,
-        opts.maximum_speed,
-    );
+    let forward = {
+        let semantic = semantic.view();
+        let matching = matching.view();
+        let alignment = alignment.view();
+
+        if opts.parallel {
+            forward_parallel(
+                semantic,
+                matching,
+                alignment,
+                &weights,
+                opts.maximum_speed,
+            )
+        } else {
+            forward_sequential(
+                semantic,
+                matching,
+                alignment,
+                &weights,
+                opts.maximum_speed,
+            )
+        }
+    };
     let backward = backward(forward.view(), semantic.len(), alignment.len());
 
     // The intermediate buffer is needed when the path in `opts.save` is not seekable.

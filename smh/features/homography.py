@@ -68,7 +68,6 @@ def main(input: Path, output: Path | None):
 
     errors = list()
     scores = list()
-    homographies = list()
 
     orb = cv2.ORB_create()
 
@@ -112,19 +111,18 @@ def main(input: Path, output: Path | None):
 
         errors.append(current_errors)
         scores.append(current_scores)
-        homographies.append(current_homographies)
 
         recent.appendleft((current_keypoints, current_descriptors))
 
-    errors = np.array(errors)
-    scores = np.array(scores)
-    homographies = np.array(homographies)
-
     diagonal = np.sqrt(width**2 + height**2)
-    scores = np.where(errors < 0.1 * diagonal, scores / diagonal, 1.0)
+
+    errors = np.array(errors) / diagonal
+    scores = np.array(scores) / diagonal
+
+    pairwise_distance_matrix = np.where(errors < 0.1, scores, 1.0)
 
     output = output or input.with_suffix(".homography.npy")
-    np.save(output, scores)
+    np.save(output, pairwise_distance_matrix)
 
 
 if __name__ == "__main__":

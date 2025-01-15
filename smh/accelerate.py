@@ -13,7 +13,7 @@ class Weights:
     semantic: float
     matching: float
     alignment: float
-    speed: float
+    acceleration: float
 
 
 @dataclass
@@ -30,7 +30,7 @@ def forward(
     maximum_speed: int,
 ) -> np.ndarray:
     δ = float(maximum_speed)
-    τ = 200.0
+    μ = len(semantic) / len(alignment)
 
     semantic_rank = rankdata(semantic, method="min") / len(semantic)
     alignment_rank = rankdata(alignment, method="min") / len(alignment)
@@ -43,17 +43,24 @@ def forward(
     current = np.full(n_semantic, np.inf)
     previous = np.full(n_semantic, np.inf)
 
-    def evaluate(a, v, s):
-        semantic_score = -τ * semantic_rank[v]
-        matching_score = τ * matching[v, s]
-        alignment_score = min((float(s) - δ * alignment_rank[a]) ** 2, τ)
-        speed_score = min(float(s) ** 2, τ)
+    def evaluate(a: int, v: int, s: int, p: int) -> float:
+        if s < μ:
+            semantic_score = 1.0 - semantic_rank[v]
+        else:
+            semantic_score = 1.0 - 0.05 * semantic_rank[v]
+
+        matching_score = matching[v, s]
+
+        τ = 1.0 + (δ - 1.0) * alignment_rank[a]
+
+        alignment_score = (s - τ) ** 2 / (δ - 1.0) ** 2
+        acceleration_score = (s - p) ** 2 / (δ - 1.0) ** 2
 
         return (
             weights.semantic * semantic_score
             + weights.matching * matching_score
             + weights.alignment * alignment_score
-            + weights.speed * speed_score
+            + weights.acceleration * acceleration_score
         )
 
     current[0] = evaluate(0, 0, 1)
@@ -74,12 +81,11 @@ def forward(
 
             for s in range(minimum_speed, maximum_speed_v + 1):
                 if np.isfinite(previous[v - s]):
-                    score = evaluate(a, v, s)
-                    average = previous[v - s]
-                    score = average + (score - average) / (a + 1)
+                    p = forward_matrix[a - 1, v - s]
+                    value = previous[v - s] + evaluate(a, v, s, p)
 
-                    if score < current[v]:
-                        current[v] = score
+                    if value < current[v]:
+                        current[v] = value
                         forward_matrix[a, v] = s
 
     return forward_matrix
